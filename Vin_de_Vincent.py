@@ -51,15 +51,43 @@ class Cave:
 
     def afficher_details_cave(self, cave):
         print(f"Nom de la cave : {cave.nom_cave}")
-        print("Bouteilles dans cette cave :")
-        for bouteille in cave.bouteilles:
-            print(f"- {bouteille.nom} ({bouteille.annee})")
-
-        print(f"Nombre d'étagères dans cette cave : {len(cave.etageres)}")
+        print("Étagères dans cette cave :")
         for etagere in cave.etageres:
-            print(f"\nDétails de l'étagère {etagere.numero}:")
-            print(f"  - Région : {etagere.region}")
-            print(f"  - Emplacements disponibles : {etagere.emplacements_disponibles}")
+            print(f"Numéro de l'étagère : {etagere.numero}")
+            print(f"Région de l'étagère : {etagere.region}")
+            print(f"Emplacements disponibles : {etagere.emplacements_disponibles}")
+
+            if etagere.bouteilles:
+                print("Bouteilles sur cette étagère :")
+                bouteilles_count = {}
+                for bouteille in etagere.bouteilles:
+                    if bouteille.nom not in bouteilles_count:
+                        bouteilles_count[bouteille.nom] = 1
+                    else:
+                        bouteilles_count[bouteille.nom] += 1
+
+                for nom, quantite in bouteilles_count.items():
+                    print(f"- {nom} : {quantite} bouteille(s)")
+            else:
+                print("Aucune bouteille sur cette étagère.")
+
+            print()  # Pour l'affichage clair entre les étagères
+    
+    def ajouter_bouteille(self, bouteille):
+        region_bouteille = bouteille.region
+
+        for etagere in self.etageres:
+            if etagere.region == region_bouteille and etagere.emplacements_disponibles > 0:
+                etagere.bouteilles.append(bouteille)
+                etagere.emplacements_disponibles -= 1
+                self.bouteilles.append(bouteille)  # Ajout à la liste de bouteilles de la cave
+                print(f"Bouteille ajoutée à l'étagère {etagere.numero} dans la cave {self.nom_cave}.")
+                return True
+
+        print(f"Aucune étagère disponible dans la région {region_bouteille} de la cave {self.nom_cave}.")
+        return False
+
+
 
 class Etagere:
     def __init__(self, id_etagere, numero, region, emplacements_disponibles, cave_associee):
@@ -87,22 +115,22 @@ class Bouteille:
         self.prix = prix
         self.lots = []
 
-    def consulter_quantite_bouteilles_cave(self):
-        if not self.caves:
-            print("Aucune cave disponible pour cet utilisateur.")
+    def consulter_quantite_bouteilles_cave(self, utilisateur):
+        if not self.bouteilles:  # Vérification si la cave a des bouteilles
+            print(f"Aucune bouteille dans la cave {self.nom_cave}.")
             return
-        
-        print("Caves disponibles:")
-        for i, cave in enumerate(self.caves, start=1):
-            print(f"{i}. {cave.nom_cave}")
 
-        choix_cave = int(input("Entrez le numéro de la cave à consulter : ")) - 1
+        print(f"Nom de la cave : {self.nom_cave}")
+        print("Bouteilles dans cette cave :")
+        bouteilles_count = {}  # Dictionnaire pour stocker le nombre de bouteilles par nom
+        for bouteille in self.bouteilles:
+            if bouteille.nom not in bouteilles_count:
+                bouteilles_count[bouteille.nom] = 1
+            else:
+                bouteilles_count[bouteille.nom] += 1
 
-        if 0 <= choix_cave < len(self.caves):
-            cave_a_consulter = self.caves[choix_cave]
-            cave_a_consulter.consulter()
-        else:
-            print("Numéro de cave invalide.")
+        for nom, quantite in bouteilles_count.items():
+            print(f"- {nom} : {quantite} bouteille(s)")
 
 # Création d'utilisateurs
 utilisateur1 = Utilisateur(1, "Alice", "motdepasse123", "alice@email.com")
@@ -115,19 +143,31 @@ cave3 = utilisateur1.creer_cave(1, "Cave d'Alice 2")
 
 # Création d'étagères dans les caves
 etagere1 = utilisateur1.creer_etagere(1, 1, "Bordeaux", 30, cave1)
-etagere2 = utilisateur2.creer_etagere(2, 1, "Bourgogne", 40, cave2)
-etagere3 = utilisateur2.creer_etagere(2, 1, "Bourgogne", 40, cave3)
+etagere2 = utilisateur1.creer_etagere(2, 1, "Bourgogne", 40, cave1)
+etagere3 = utilisateur1.creer_etagere(3, 1, "Provence", 40, cave1)
+
+
+etagere4 = utilisateur2.creer_etagere(4, 1, "Bordeaux", 30, cave2)
+etagere5 = utilisateur2.creer_etagere(5, 1, "Bourgogne", 40, cave2)
+etagere6 = utilisateur2.creer_etagere(6, 1, "Provence", 40, cave2)
+
+
+etagere7 = utilisateur1.creer_etagere(7, 1, "Bordeaux", 30, cave3)
+etagere8 = utilisateur1.creer_etagere(8, 1, "Bourgogne", 40, cave3)
+etagere9 = utilisateur1.creer_etagere(9, 1, "Provence", 40, cave3)
+
 
 # Création de bouteilles
 bouteille1 = Bouteille(1, "Domaine A", "Vin Rouge", "Rouge", 2010, "Bordeaux", "Excellent vin", "18/20", "12/20", "photo1.jpg", 50.0)
 bouteille2 = Bouteille(2, "Domaine B", "Vin Blanc", "Blanc", 2015, "Bourgogne", "Très bon vin", "17/20", "13/20", "photo2.jpg", 40.0)
 bouteille3 = Bouteille(3, "Domaine C", "Vin Rosé", "Rosé", 2020, "Provence", "Fruité et léger", "16/20", "14/20", "photo3.jpg", 30.0)
 
-# Ajout de bouteilles aux caves
-cave1.bouteilles.extend([bouteille1, bouteille2])
-cave2.bouteilles.append(bouteille3)
-cave3.bouteilles.append(bouteille3)
-cave3.bouteilles.append(bouteille3)
+# Ajout de bouteilles aux caves en utilisant la méthode ajouter_bouteille
+cave1.ajouter_bouteille(bouteille1)
+cave1.ajouter_bouteille(bouteille2)
+cave2.ajouter_bouteille(bouteille3)
+cave3.ajouter_bouteille(bouteille3)
+cave3.ajouter_bouteille(bouteille3)
 
 # Consultation du contenu des caves
 print("Contenu de la Cave d'Alice:")
