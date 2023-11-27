@@ -1,3 +1,5 @@
+import sqlite3
+
 class Utilisateur:
     def __init__(self, id_utilisateur, nom_utilisateur, mot_de_passe, email):
         # Attributs d'un utilisateur
@@ -21,6 +23,14 @@ class Utilisateur:
         self.etageres.append(nouvelle_etagere)
         cave_associee.etageres.append(nouvelle_etagere)  # Ajout à la liste des étagères de la cave
         return nouvelle_etagere
+    
+    def sauvegarder_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Utilisateurs VALUES (?, ?, ?, ?)",
+                  (self.id_utilisateur, self.nom_utilisateur, self.mot_de_passe, self.email))
+        conn.commit()
+        conn.close()
 
 
 class Cave:
@@ -103,6 +113,14 @@ class Cave:
         
         print(f"Bouteille '{bouteille.nom}' introuvable dans la cave {self.nom_cave}.")
         return False
+    
+    def sauvegarder_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Caves VALUES (?, ?, ?)",
+                  (self.id_cave, self.nom_cave, self.proprietaire.id_utilisateur))
+        conn.commit()
+        conn.close()
 
 
 
@@ -115,6 +133,14 @@ class Etagere:
         self.emplacements_disponibles = emplacements_disponibles
         self.cave_associee = cave_associee
         self.bouteilles = []  # Liste pour stocker les bouteilles
+
+    def sauvegarder_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Etageres VALUES (?, ?, ?, ?, ?)",
+                  (self.id_etagere, self.numero, self.region, self.emplacements_disponibles, self.cave_associee.id_cave))
+        conn.commit()
+        conn.close()
     
 
 
@@ -154,9 +180,24 @@ class Bouteille:
         self.note_archivage = note_archivage
         print(f"Bouteille '{self.nom}' archivée avec la note : {note_archivage}")
 
+    
+    def sauvegarder_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Bouteilles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                  (self.id_bouteille, self.domaine_viticole, self.nom, self.type, self.annee,
+                   self.region, self.commentaires, self.note_personnelle, self.note_moyenne,
+                   self.photo_etiquette, self.prix))
+        conn.commit()
+        conn.close()
+
 # Création d'utilisateurs
 utilisateur1 = Utilisateur(1, "Alice", "motdepasse123", "alice@email.com")
 utilisateur2 = Utilisateur(2, "Bob", "mdp456", "bob@email.com")
+
+# Appel des méthodes pour sauvegarder les utilisateurs dans la base de données
+utilisateur1.sauvegarder_dans_bdd()
+utilisateur2.sauvegarder_dans_bdd()
 
 # Création de caves pour les utilisateurs
 cave1 = utilisateur1.creer_cave(1, "Cave d'Alice")
