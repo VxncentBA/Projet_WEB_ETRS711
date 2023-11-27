@@ -87,6 +87,23 @@ class Cave:
         print(f"Aucune étagère disponible dans la région {region_bouteille} de la cave {self.nom_cave}.")
         return False
 
+    def supprimer_bouteille(self, bouteille):
+        for etagere in self.etageres:
+            if bouteille in etagere.bouteilles:
+                etagere.bouteilles.remove(bouteille)
+                etagere.emplacements_disponibles += 1  # Augmenter le nombre d'emplacements disponibles
+                self.bouteilles.remove(bouteille)
+                print(f"Bouteille '{bouteille.nom}' supprimée de l'étagère {etagere.numero} dans la cave {self.nom_cave}.")
+                return True
+        
+        if bouteille in self.bouteilles:
+            self.bouteilles.remove(bouteille)
+            print(f"Bouteille '{bouteille.nom}' supprimée de la cave {self.nom_cave}.")
+            return True
+        
+        print(f"Bouteille '{bouteille.nom}' introuvable dans la cave {self.nom_cave}.")
+        return False
+
 
 
 class Etagere:
@@ -98,6 +115,7 @@ class Etagere:
         self.emplacements_disponibles = emplacements_disponibles
         self.cave_associee = cave_associee
         self.bouteilles = []  # Liste pour stocker les bouteilles
+    
 
 
 class Bouteille:
@@ -131,6 +149,10 @@ class Bouteille:
 
         for nom, quantite in bouteilles_count.items():
             print(f"- {nom} : {quantite} bouteille(s)")
+    
+    def archiver_bouteille(self, note_archivage):
+        self.note_archivage = note_archivage
+        print(f"Bouteille '{self.nom}' archivée avec la note : {note_archivage}")
 
 # Création d'utilisateurs
 utilisateur1 = Utilisateur(1, "Alice", "motdepasse123", "alice@email.com")
@@ -164,10 +186,22 @@ bouteille3 = Bouteille(3, "Domaine C", "Vin Rosé", "Rosé", 2020, "Provence", "
 
 # Ajout de bouteilles aux caves en utilisant la méthode ajouter_bouteille
 cave1.ajouter_bouteille(bouteille1)
+cave1.ajouter_bouteille(bouteille1)
 cave1.ajouter_bouteille(bouteille2)
 cave2.ajouter_bouteille(bouteille3)
 cave3.ajouter_bouteille(bouteille3)
 cave3.ajouter_bouteille(bouteille3)
+
+# Consultation du contenu des caves
+print("Contenu de la Cave d'Alice:")
+cave1.consulter_quantite_bouteilles_cave(utilisateur1)
+
+
+# Supprimer une bouteille
+cave1.supprimer_bouteille(bouteille1)
+
+# Archiver une bouteille
+bouteille3.archiver_bouteille("Bonne, mais pas exceptionnelle.")
 
 # Consultation du contenu des caves
 print("Contenu de la Cave d'Alice:")
