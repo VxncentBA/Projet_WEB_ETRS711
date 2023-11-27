@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sélection de bouteille et de cave</title>
+</head>
+<body>
+    <h1>Sélection de bouteille et de cave</h1>
+
+    <form action="/ajouter_bouteille_cave" method="post">
+        <label for="utilisateur">Sélectionnez un utilisateur :</label>
+        <select id="utilisateur" name="utilisateur">
+            {% for user in utilisateurs %}
+                <option value="{{ user.id_utilisateur }}">{{ user.nom_utilisateur }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label for="bouteille">Sélectionnez une bouteille :</label>
+        <select id="bouteille" name="bouteille">
+            {% for bouteille in bouteilles %}
+                <option value="{{ bouteille.id_bouteille }}">{{ bouteille.nom }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label for="cave">Sélectionnez une cave :</label>
+        <select id="cave" name="cave">
+            {% for cave in caves %}
+                <option value="{{ cave.id_cave }}">{{ cave.nom_cave }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <input type="submit" value="Ajouter la bouteille à la cave">
+    </form>
+</body>
+</html>
