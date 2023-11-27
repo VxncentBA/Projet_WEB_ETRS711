@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <h1>Contenu de la table Caves</h1>
 <table border="1">
     <tr>
@@ -34,6 +36,29 @@
     {% endfor %}
 </table>
 
+<h1>Contenu de la table Etageres avec Bouteilles</h1>
+{% for etagere in etageres %}
+    <h2>Bouteilles sur l'étagère {{ etagere[1] }} dans la cave {{ etagere[4] }}</h2>
+    <table border="1">
+        <tr>
+            <th>ID Bouteille</th>
+            <th>Domaine Viticole</th>
+            <th>Nom</th>
+            <!-- Ajoutez d'autres en-têtes pour les colonnes -->
+        </tr>
+        {% for bouteille in bouteilles %}
+            {% if bouteille[5] == etagere[0] %}
+                <tr>
+                    <td>{{ bouteille[0] }}</td>
+                    <td>{{ bouteille[1] }}</td>
+                    <td>{{ bouteille[2] }}</td>
+                    <!-- Ajoutez d'autres cellules pour les colonnes -->
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endfor %}
+
 <h1>Contenu de la table Bouteilles</h1>
 <table border="1">
     <tr>
@@ -51,3 +76,5 @@
     </tr>
     {% endfor %}
 </table>
+
+</html>

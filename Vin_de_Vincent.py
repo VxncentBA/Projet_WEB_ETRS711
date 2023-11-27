@@ -1,45 +1,50 @@
 import sqlite3
 from flask import Flask, render_template, request
 
-app = Flask(__name__)
+#app = Flask(__name__)
 
-@app.route('/')
-def accueil():
-    conn = sqlite3.connect('ma_base_de_donnees.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM Utilisateurs")
-    utilisateurs = c.fetchall()
-    conn.close()
-    return render_template('accueil.html', utilisateurs=utilisateurs)
+# @app.route('/')
+# def accueil():
+#     conn = sqlite3.connect('ma_base_de_donnees.db')
+#     c = conn.cursor()
+#     c.execute("SELECT * FROM Utilisateurs")
+#     utilisateurs = c.fetchall()
+#     conn.close()
+#     return render_template('accueil.html', utilisateurs=utilisateurs)
 
-@app.route('/tables')
-def afficher_tables():
-    conn = sqlite3.connect('ma_base_de_donnees.db')
-    c = conn.cursor()
+# @app.route('/tables')
+# def afficher_tables():
+#     conn = sqlite3.connect('ma_base_de_donnees.db')
+#     c = conn.cursor()
 
-    # Récupération des données de la table Utilisateurs
-    c.execute("SELECT * FROM Utilisateurs")
-    utilisateurs = c.fetchall()
+#     # Récupération des données de la table Utilisateurs
+#     c.execute("SELECT * FROM Utilisateurs")
+#     utilisateurs = c.fetchall()
 
-    # Récupération des données de la table Caves
-    c.execute("SELECT * FROM Caves")
-    caves = c.fetchall()
+#     # Récupération des données de la table Caves
+#     c.execute("SELECT * FROM Caves")
+#     caves = c.fetchall()
 
-    # Récupération des données de la table Etageres
-    c.execute("SELECT * FROM Etageres")
-    etageres = c.fetchall()
+#     # Récupération des données de la table Etageres
+#     c.execute("SELECT * FROM Etageres")
+#     etageres = c.fetchall()
 
-    # Récupération des données de la table Bouteilles
-    c.execute("SELECT * FROM Bouteilles")
-    bouteilles = c.fetchall()
+#     # Récupération des données de la table Bouteilles associées à chaque étagère
+#     c.execute("SELECT * FROM Bouteilles")
+#     bouteilles = c.fetchall()
+#     # c.execute("""
+#     # SELECT Bouteilles.*
+#     # FROM Bouteilles
+#     # JOIN EtagereBouteille ON Bouteilles.id_bouteille = EtagereBouteille.id_bouteille
+#     # JOIN Etageres ON Etageres.id_etagere = EtagereBouteille.id_etagere
+#     # """)
+#     # bouteilles = c.fetchall()
+#     conn.close()
 
-    conn.close()
+#     return render_template('affichage_tables.html', utilisateurs=utilisateurs, caves=caves, etageres=etageres, bouteilles=bouteilles) #
 
-    return render_template('affichage_tables.html', utilisateurs=utilisateurs, caves=caves, etageres=etageres, bouteilles=bouteilles)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
 
 class Utilisateur:
     def __init__(self, id_utilisateur, nom_utilisateur, mot_de_passe, email):
@@ -74,6 +79,13 @@ class Utilisateur:
         conn.commit()
         conn.close()
 
+    def mettre_a_jour_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("UPDATE Utilisateurs SET nom_utilisateur = ?, mot_de_passe = ?, email = ? WHERE id_utilisateur = ?",
+                  (self.nom_utilisateur, self.mot_de_passe, self.email, self.id_utilisateur))
+        conn.commit()
+        conn.close()
 
 class Cave:
     def __init__(self, id_cave, nom_cave, proprietaire):
@@ -133,6 +145,7 @@ class Cave:
                 etagere.bouteilles.append(bouteille)
                 etagere.emplacements_disponibles -= 1
                 self.bouteilles.append(bouteille)  # Ajout à la liste de bouteilles de la cave
+                etagere.mettre_a_jour_emplacements_disponibles()  # Mettre à jour la BDD
                 print(f"Bouteille ajoutée à l'étagère {etagere.numero} dans la cave {self.nom_cave}.")
                 return True
 
@@ -145,6 +158,7 @@ class Cave:
                 etagere.bouteilles.remove(bouteille)
                 etagere.emplacements_disponibles += 1  # Augmenter le nombre d'emplacements disponibles
                 self.bouteilles.remove(bouteille)
+                etagere.mettre_a_jour_emplacements_disponibles()  # Mettre à jour la BDD
                 print(f"Bouteille '{bouteille.nom}' supprimée de l'étagère {etagere.numero} dans la cave {self.nom_cave}.")
                 return True
         
@@ -164,7 +178,12 @@ class Cave:
         conn.commit()
         conn.close()
 
-
+    def mettre_a_jour_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("UPDATE Caves SET nom_cave = ?, proprietaire_id = ? WHERE id_cave = ?", (self.nom_cave, self.proprietaire.id_utilisateur, self.id_cave))
+        conn.commit()
+        conn.close()
 
 class Etagere:
     def __init__(self, id_etagere, numero, region, emplacements_disponibles, cave_associee):
@@ -175,6 +194,14 @@ class Etagere:
         self.emplacements_disponibles = emplacements_disponibles
         self.cave_associee = cave_associee
         self.bouteilles = []  # Liste pour stocker les bouteilles
+
+    def mettre_a_jour_emplacements_disponibles(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("UPDATE Etageres SET emplacements_disponibles = ? WHERE id_etagere = ?",
+                  (self.emplacements_disponibles, self.id_etagere))
+        conn.commit()
+        conn.close()
 
     def sauvegarder_dans_bdd(self):
         conn = sqlite3.connect('ma_base_de_donnees.db')
@@ -193,9 +220,15 @@ class Etagere:
             print("Étagère ajoutée avec succès à la base de données.")
         else:
             print("ID d'étagère déjà existant dans la base de données. Étagère non ajoutée.")
+
+    def mettre_a_jour_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("UPDATE Etageres SET numero = ?, region = ?, emplacements_disponibles = ?, cave_associee_id = ? WHERE id_etagere = ?",
+                  (self.numero, self.region, self.emplacements_disponibles, self.cave_associee.id_cave, self.id_etagere))
+        conn.commit()
+        conn.close()
     
-
-
 class Bouteille:
     def __init__(self, id_bouteille, domaine_viticole, nom, type, annee, region, commentaires, note_personnelle, note_moyenne, photo_etiquette, prix):
         self.id_bouteille = id_bouteille
@@ -243,6 +276,14 @@ class Bouteille:
         conn.commit()
         conn.close()
 
+    def mettre_a_jour_dans_bdd(self):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("UPDATE Bouteilles SET domaine_viticole = ?, nom = ?, type = ?, annee = ?, region = ?, commentaires = ?, note_personnelle = ?, note_moyenne = ?, photo_etiquette = ?, prix = ? WHERE id_bouteille = ?",
+                  (self.domaine_viticole, self.nom, self.type, self.annee, self.region, self.commentaires, self.note_personnelle, self.note_moyenne, self.photo_etiquette, self.prix, self.id_bouteille))
+        conn.commit()
+        conn.close()
+
 # Création d'utilisateurs
 utilisateur1 = Utilisateur(1, "Alice", "motdepasse123", "alice@email.com")
 utilisateur2 = Utilisateur(2, "Bob", "mdp456", "bob@email.com")
@@ -255,6 +296,11 @@ utilisateur3 = Utilisateur(3, "Mathis", "mdp456", "bob@email.com")
 # utilisateur2.sauvegarder_dans_bdd()
 # utilisateur3.sauvegarder_dans_bdd()
 
+utilisateur1.mettre_a_jour_dans_bdd()
+utilisateur2.mettre_a_jour_dans_bdd()
+utilisateur3.mettre_a_jour_dans_bdd()
+
+
 # Création de caves pour les utilisateurs
 cave1 = utilisateur1.creer_cave(1, "Cave d'Alice")
 cave2 = utilisateur2.creer_cave(2, "Cave de Bob")
@@ -262,10 +308,10 @@ cave3 = utilisateur1.creer_cave(3, "Cave d'Alice 2")
 cave4 = utilisateur3.creer_cave(4, "Cave de Mathis")
 
 # Enregistrement des caves dans la base de données
-# cave1.sauvegarder_dans_bdd()
-# cave2.sauvegarder_dans_bdd()
-# cave3.sauvegarder_dans_bdd()
-# cave4.sauvegarder_dans_bdd()
+cave1.mettre_a_jour_dans_bdd()
+cave2.mettre_a_jour_dans_bdd()
+cave3.mettre_a_jour_dans_bdd()
+cave4.mettre_a_jour_dans_bdd()
 
 # Création d'étagères dans les caves
 etagere1 = utilisateur1.creer_etagere(1, 1, "Bordeaux", 30, cave1)
@@ -287,16 +333,16 @@ etagere10 = utilisateur3.creer_etagere(10, 1, "Provence", 10, cave4)
 
 
 # Enregistrement des étagères dans la base de données
-# etagere1.sauvegarder_dans_bdd()
-# etagere2.sauvegarder_dans_bdd()
-# etagere3.sauvegarder_dans_bdd()
-# etagere4.sauvegarder_dans_bdd()
-# etagere5.sauvegarder_dans_bdd()
-# etagere6.sauvegarder_dans_bdd()
-# etagere7.sauvegarder_dans_bdd()
-# etagere8.sauvegarder_dans_bdd()
-# etagere9.sauvegarder_dans_bdd()
-# etagere10.sauvegarder_dans_bdd()
+etagere1.mettre_a_jour_dans_bdd()
+etagere2.mettre_a_jour_dans_bdd()
+etagere3.mettre_a_jour_dans_bdd()
+etagere4.mettre_a_jour_dans_bdd()
+etagere5.mettre_a_jour_dans_bdd()
+etagere6.mettre_a_jour_dans_bdd()
+etagere7.mettre_a_jour_dans_bdd()
+etagere8.mettre_a_jour_dans_bdd()
+etagere9.mettre_a_jour_dans_bdd()
+etagere10.mettre_a_jour_dans_bdd()
 
 
 # Création de bouteilles
@@ -305,9 +351,9 @@ bouteille2 = Bouteille(2, "Domaine B", "Vin Blanc", "Blanc", 2015, "Bourgogne", 
 bouteille3 = Bouteille(3, "Domaine C", "Vin Rosé", "Rosé", 2020, "Provence", "Fruité et léger", "16/20", "14/20", "photo3.jpg", 30.0)
 
 # Appel des méthodes pour sauvegarder les bouteilles dans la base de données
-# bouteille1.sauvegarder_dans_bdd()
-# bouteille2.sauvegarder_dans_bdd()
-# bouteille3.sauvegarder_dans_bdd()
+bouteille1.mettre_a_jour_dans_bdd()
+bouteille2.mettre_a_jour_dans_bdd()
+bouteille3.mettre_a_jour_dans_bdd()
 
 # Ajout de bouteilles aux caves en utilisant la méthode ajouter_bouteille
 cave1.ajouter_bouteille(bouteille1)

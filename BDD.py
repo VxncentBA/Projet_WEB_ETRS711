@@ -45,6 +45,16 @@ c.execute('''CREATE TABLE IF NOT EXISTS Bouteilles (
                 prix REAL
             )''')
 
+
+# # Création de la table de liaison EtagereBouteille
+# c.execute('''CREATE TABLE IF NOT EXISTS EtagereBouteille (
+#                 id INTEGER PRIMARY KEY,
+#                 etagere_id INTEGER NOT NULL,
+#                 bouteille_id INTEGER NOT NULL,
+#                 FOREIGN KEY (etagere_id) REFERENCES Etageres(id_etagere),
+#                 FOREIGN KEY (bouteille_id) REFERENCES Bouteilles(id_bouteille)
+#             )''')
+
 # Commit pour sauvegarder les changements
 conn.commit()
 
