@@ -1,0 +1,53 @@
+<h1>Contenu de la table Caves</h1>
+<table border="1">
+    <tr>
+        <th>ID Cave</th>
+        <th>Nom Cave</th>
+        <th>ID Propriétaire</th>
+    </tr>
+    {% for cave in caves %}
+    <tr>
+        <td>{{ cave[0] }}</td>
+        <td>{{ cave[1] }}</td>
+        <td>{{ cave[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h1>Contenu de la table Etageres</h1>
+<table border="1">
+    <tr>
+        <th>ID Etagere</th>
+        <th>Numero</th>
+        <th>Region</th>
+        <th>Emplacements disponibles</th>
+        <th>ID Cave associée</th>
+    </tr>
+    {% for etagere in etageres %}
+    <tr>
+        <td>{{ etagere[0] }}</td>
+        <td>{{ etagere[1] }}</td>
+        <td>{{ etagere[2] }}</td>
+        <td>{{ etagere[3] }}</td>
+        <td>{{ etagere[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h1>Contenu de la table Bouteilles</h1>
+<table border="1">
+    <tr>
+        <th>ID Bouteille</th>
+        <th>Domaine Viticole</th>
+        <th>Nom</th>
+        <!-- Ajoutez d'autres en-têtes pour les colonnes -->
+    </tr>
+    {% for bouteille in bouteilles %}
+    <tr>
+        <td>{{ bouteille[0] }}</td>
+        <td>{{ bouteille[1] }}</td>
+        <td>{{ bouteille[2] }}</td>
+        <!-- Ajoutez d'autres cellules pour les colonnes -->
+    </tr>
+    {% endfor %}
+</table>
