@@ -5,18 +5,18 @@ from Vin_de_Vincent import *
 # Création d'utilisateurs
 utilisateur1 = Utilisateur(1, "Alice", "motdepasse123", "alice@email.com")
 utilisateur2 = Utilisateur(2, "Bob", "mdp456", "bob@email.com")
-
 utilisateur3 = Utilisateur(3, "Mathis", "mdp456", "bob@email.com")
 
 
 # Appel des méthodes pour sauvegarder les utilisateurs dans la base de données
-# utilisateur1.sauvegarder_dans_bdd()
+#utilisateur1.sauvegarder_dans_bdd()
 # utilisateur2.sauvegarder_dans_bdd()
 # utilisateur3.sauvegarder_dans_bdd()
 
-utilisateur1.mettre_a_jour_dans_bdd()
+#utilisateur1.mettre_a_jour_dans_bdd()
 utilisateur2.mettre_a_jour_dans_bdd()
 utilisateur3.mettre_a_jour_dans_bdd()
+
 
 
 # Création de caves pour les utilisateurs
@@ -26,9 +26,9 @@ cave3 = utilisateur1.creer_cave(3, "Cave d'Alice 2")
 cave4 = utilisateur3.creer_cave(4, "Cave de Mathis")
 
 # Enregistrement des caves dans la base de données
-cave1.mettre_a_jour_dans_bdd()
+#cave1.sauvegarder_dans_bdd()
 cave2.mettre_a_jour_dans_bdd()
-cave3.mettre_a_jour_dans_bdd()
+#cave3.sauvegarder_dans_bdd()
 cave4.mettre_a_jour_dans_bdd()
 
 # Création d'étagères dans les caves
@@ -51,15 +51,15 @@ etagere10 = utilisateur3.creer_etagere(10, 1, "Provence", 10, cave4)
 
 
 # Enregistrement des étagères dans la base de données
-etagere1.mettre_a_jour_dans_bdd()
-etagere2.mettre_a_jour_dans_bdd()
-etagere3.mettre_a_jour_dans_bdd()
+etagere1.sauvegarder_dans_bdd()
+etagere2.sauvegarder_dans_bdd()
+etagere3.sauvegarder_dans_bdd()
 etagere4.mettre_a_jour_dans_bdd()
 etagere5.mettre_a_jour_dans_bdd()
 etagere6.mettre_a_jour_dans_bdd()
-etagere7.mettre_a_jour_dans_bdd()
-etagere8.mettre_a_jour_dans_bdd()
-etagere9.mettre_a_jour_dans_bdd()
+etagere7.sauvegarder_dans_bdd()
+etagere8.sauvegarder_dans_bdd()
+etagere9.sauvegarder_dans_bdd()
 etagere10.mettre_a_jour_dans_bdd()
 
 
@@ -69,6 +69,7 @@ bouteille2 = Bouteille(2, "Domaine B", "Vin Blanc", "Blanc", 2015, "Bourgogne", 
 bouteille3 = Bouteille(3, "Domaine C", "Vin Rosé", "Rosé", 2020, "Provence", "Fruité et léger", "16/20", "14/20", "photo3.jpg", 30.0)
 
 # Appel des méthodes pour sauvegarder les bouteilles dans la base de données
+#bouteille1.sauvegarder_dans_bdd()
 bouteille1.mettre_a_jour_dans_bdd()
 bouteille2.mettre_a_jour_dans_bdd()
 bouteille3.mettre_a_jour_dans_bdd()

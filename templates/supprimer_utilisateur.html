@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supprimer un utilisateur</title>
+</head>
+<body>
+    <h1>Supprimer un utilisateur</h1>
+    <form action="" method="post">
+        <label for="utilisateur">Choisir un utilisateur à supprimer :</label>
+        <select name="utilisateur" id="utilisateur">
+            {% for utilisateur in utilisateurs %}
+                <option value="{{ utilisateur[0] }}">{{ utilisateur[1] }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Supprimer">
+    </form>
+</body>
+</html>

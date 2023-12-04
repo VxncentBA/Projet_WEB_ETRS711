@@ -42,6 +42,15 @@ class Utilisateur:
         conn.commit()
         conn.close()
 
+    @staticmethod
+    def utilisateur_existe(id_utilisateur):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM Utilisateurs WHERE id_utilisateur = ?", (id_utilisateur,))
+        utilisateur = c.fetchone()
+        conn.close()
+        return utilisateur is not None
+
 class Cave:
     def __init__(self, id_cave, nom_cave, proprietaire):
         # Attributs d'une cave
