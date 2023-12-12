@@ -8,20 +8,35 @@
 <body>
     <header>
         <h1>Bienvenue sur la page d'accueil</h1>
-        {% if 'username' in session %}
-            <p>Connecté en tant que : {{ session['username'] }}</p>
+        {% if nom_utilisateur %}
+            <p>Connecté en tant que : {{ nom_utilisateur }}</p>
+            <h2>Caves de l'utilisateur</h2>
+            <ul>
+                {% for cave in caves_utilisateur %}
+                    <li>
+                        {{ cave[1] }} <!-- Cave[1] représente le nom de la cave, adapte selon ta structure de données -->
+                        <ul>
+                            {% for etagere in cave['etageres'] %}
+                                <li>Étagère {{ etagere[1] }} <!-- Adaptation selon la structure de données, etagere[1] représente le numéro de l'étagère -->
+                                    {% if etagere['bouteilles'] %}
+                                        <ul>
+                                            {% for bouteille in etagere['bouteilles'] %}
+                                                <li>{{ bouteille[2] }}</li> <!-- Adaptation selon la structure de données, bouteille[2] représente le nom de la bouteille -->
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p>Aucune bouteille sur cette étagère</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
         {% endif %}
     </header>
     <main>
-        <section>
-            <h2>Liste des utilisateurs</h2>
-            <ul>
-                {% for utilisateur in utilisateurs %}
-                    <li>{{ utilisateur.nom_utilisateur }}</li>
-                {% endfor %}
-            </ul>
-        </section>
-        <!-- Autres sections ou éléments à ajouter en fonction de vos besoins -->
+        <!-- Autres éléments ou sections à ajouter -->
         <a href="{{ url_for('deconnexion') }}">Déconnexion</a>
     </main>
     <footer>

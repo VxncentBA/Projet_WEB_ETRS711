@@ -97,13 +97,14 @@ def login():
         # Recherche de l'utilisateur dans la base de données
         conn = sqlite3.connect('ma_base_de_donnees.db')
         c = conn.cursor()
-        c.execute("SELECT nom_utilisateur, mot_de_passe FROM Utilisateurs WHERE nom_utilisateur = ?", (nom_utilisateur,))
+        c.execute("SELECT id_utilisateur, nom_utilisateur, mot_de_passe FROM Utilisateurs WHERE nom_utilisateur = ?", (nom_utilisateur,))
         utilisateur = c.fetchone()
         conn.close()
 
-        if utilisateur and verify_password(utilisateur[1], mot_de_passe):
-            # L'utilisateur est authentifié, stocker le nom d'utilisateur dans la session
+        if utilisateur and verify_password(utilisateur[2], mot_de_passe):
+            # L'utilisateur est authentifié, stocker l'ID de l'utilisateur dans la session
             session['logged_in'] = True
+            session['user_id'] = utilisateur[0]  # Stocker l'ID de l'utilisateur dans la session
             session['username'] = nom_utilisateur  # Stocker le nom d'utilisateur dans la session
             flash('Connecté avec succès!', 'success')
             return redirect(url_for('accueil'))
@@ -120,13 +121,47 @@ def deconnexion():
     session.pop('username', None)   # Supprimer le nom d'utilisateur de la session
     return redirect(url_for('login'))  # Rediriger vers la page de connexion
 
+@app.route('/creer_cave', methods=['GET', 'POST'])
+def creer_cave():
+    if 'logged_in' in session and session['logged_in']:
+        if request.method == 'POST':
+            nom_cave = request.form['nom_cave']
 
+            # Récupérer l'ID de l'utilisateur actuellement connecté
+            user_id = session['user_id']
+
+            # Créer la cave pour l'utilisateur
+            nouvelle_cave = Cave(id_cave=None, nom_cave=nom_cave, proprietaire_id=user_id)
+            nouvelle_cave.sauvegarder_dans_bdd()
+
+            flash('Nouvelle cave créée avec succès!', 'success')
+            return redirect(url_for('accueil'))
+        else:
+            return render_template('creer_cave.html')
+    else:
+        flash('Vous devez être connecté pour créer une cave.', 'error')
+        return redirect(url_for('login'))
 
 @app.route('/accueil')
 def accueil():
     if 'logged_in' in session and session['logged_in']:
-        # Charger la page d'accueil pour l'utilisateur connecté
-        return render_template('accueil.html')
+        nom_utilisateur = session['username']
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+
+        # Récupérer les caves de l'utilisateur connecté
+        c.execute("SELECT * FROM Caves WHERE proprietaire_id = ?", (session['user_id'],))
+        caves_utilisateur = c.fetchall()
+
+        # Récupérer les étagères pour chaque cave de l'utilisateur
+        for cave in caves_utilisateur:
+            c.execute("SELECT * FROM Etageres WHERE cave_associee_id = ?", (cave[0],))
+            etageres_cave = c.fetchall()
+            cave['etageres'] = etageres_cave
+
+        conn.close()
+
+        return render_template('accueil.html', nom_utilisateur=nom_utilisateur, caves_utilisateur=caves_utilisateur)
     else:
         return redirect(url_for('login'))
 
