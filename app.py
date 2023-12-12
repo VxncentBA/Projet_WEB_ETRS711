@@ -167,5 +167,30 @@ def accueil():
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/ajouter_bouteille/<int:id_cave>', methods=['POST'])
+def ajouter_bouteille(id_cave):
+    if 'logged_in' in session and session['logged_in']:
+        if request.method == 'POST':
+            nom_bouteille = request.form['nom_bouteille']
+            
+            # Vérifie si la cave appartient à l'utilisateur connecté
+            cave = Cave.recuperer_cave_par_id(id_cave)
+            if cave and cave.proprietaire.id_utilisateur == session['user_id']:
+                # Création de la bouteille
+                # ... (implémentez la création de la bouteille)
+
+                # Ajout de la bouteille à la cave
+                cave.ajouter_bouteille(nouvelle_bouteille)
+                
+                flash('Bouteille ajoutée à la cave avec succès!', 'success')
+                return redirect(url_for('accueil'))
+            else:
+                flash('Cette cave n\'appartient pas à cet utilisateur.', 'error')
+                return redirect(url_for('accueil'))
+    else:
+        flash('Vous devez être connecté pour ajouter une bouteille.', 'error')
+        return redirect(url_for('login'))
+
 if __name__ == '__main__':
     app.run(debug=True)
