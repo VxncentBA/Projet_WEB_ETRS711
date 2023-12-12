@@ -142,6 +142,26 @@ class Cave:
         conn.commit()
         conn.close()
 
+    @staticmethod
+    def obtenir_dernier_id_cave():
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("SELECT MAX(id_cave) FROM Caves")
+        dernier_id = c.fetchone()[0]
+        conn.close()
+        return dernier_id if dernier_id else 0
+
+    @staticmethod
+    def recuperer_caves_utilisateur(user_id):
+        conn = sqlite3.connect('ma_base_de_donnees.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM Caves WHERE proprietaire_id = ?", (user_id,))
+        rows = c.fetchall()
+        caves_utilisateur = [Cave(row[0], row[1], Utilisateur(row[2], None, None, None)) for row in rows]
+        conn.close()
+        return caves_utilisateur
+
+        
 class Etagere:
     def __init__(self, id_etagere, numero, region, emplacements_disponibles, cave_associee):
         # Attributs d'une étagère

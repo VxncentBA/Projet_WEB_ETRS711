@@ -126,12 +126,13 @@ def creer_cave():
     if 'logged_in' in session and session['logged_in']:
         if request.method == 'POST':
             nom_cave = request.form['nom_cave']
-
-            # Récupérer l'ID de l'utilisateur actuellement connecté
             user_id = session['user_id']
 
-            # Créer la cave pour l'utilisateur
-            nouvelle_cave = Cave(id_cave=None, nom_cave=nom_cave, proprietaire_id=user_id)
+            # Obtenez le nouvel ID de la cave en utilisant la méthode obtenir_dernier_id_cave
+            dernier_id_cave = Cave.obtenir_dernier_id_cave()
+            nouvel_id_cave = dernier_id_cave + 1
+
+            nouvelle_cave = Cave(id_cave=nouvel_id_cave, nom_cave=nom_cave, proprietaire=Utilisateur(user_id, None, None, None))
             nouvelle_cave.sauvegarder_dans_bdd()
 
             flash('Nouvelle cave créée avec succès!', 'success')
@@ -142,22 +143,23 @@ def creer_cave():
         flash('Vous devez être connecté pour créer une cave.', 'error')
         return redirect(url_for('login'))
 
+
 @app.route('/accueil')
 def accueil():
     if 'logged_in' in session and session['logged_in']:
         nom_utilisateur = session['username']
+        
         conn = sqlite3.connect('ma_base_de_donnees.db')
         c = conn.cursor()
-
+        
         # Récupérer les caves de l'utilisateur connecté
-        c.execute("SELECT * FROM Caves WHERE proprietaire_id = ?", (session['user_id'],))
-        caves_utilisateur = c.fetchall()
+        caves_utilisateur = Cave.recuperer_caves_utilisateur(session['user_id'])
 
         # Récupérer les étagères pour chaque cave de l'utilisateur
         for cave in caves_utilisateur:
-            c.execute("SELECT * FROM Etageres WHERE cave_associee_id = ?", (cave[0],))
+            c.execute("SELECT * FROM Etageres WHERE cave_associee_id = ?", (cave.id_cave,))
             etageres_cave = c.fetchall()
-            cave['etageres'] = etageres_cave
+            cave.etageres = [Etagere(row[0], row[1], row[2], row[3], cave) for row in etageres_cave]
 
         conn.close()
 
