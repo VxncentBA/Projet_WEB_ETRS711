@@ -87,15 +87,8 @@ class Cave:
 
             if etagere.bouteilles:
                 print("Bouteilles sur cette étagère :")
-                bouteilles_count = {}
                 for bouteille in etagere.bouteilles:
-                    if bouteille.nom not in bouteilles_count:
-                        bouteilles_count[bouteille.nom] = 1
-                    else:
-                        bouteilles_count[bouteille.nom] += 1
-
-                for nom, quantite in bouteilles_count.items():
-                    print(f"- {nom} : {quantite} bouteille(s)")
+                    print(f"- {bouteille.nom}")
             else:
                 print("Aucune bouteille sur cette étagère.")
 
