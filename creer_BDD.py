@@ -1,6 +1,8 @@
 import sqlite3
 
+
 def creer_bdd():
+
     # Création et connexion à la base de données
 conn = sqlite3.connect('ma_base_de_donnees.db')
 c = conn.cursor()

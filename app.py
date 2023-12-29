@@ -1,4 +1,6 @@
-import sqlite3, bcrypt
+from models.cave import Cave
+import sqlite3
+import bcrypt
 from Vin_de_Vincent import *
 from flask import (
     Flask,
@@ -13,8 +15,6 @@ from flask import (
 
 app = Flask(__name__)
 app.secret_key = "vincent"
-
-from models.cave import Cave
 
 
 # Cette fonction vérifie le mot de passe haché avec bcrypt
@@ -108,7 +108,8 @@ def supprimer_utilisateur():
             (id_utilisateur_a_supprimer,),
         )
         c.execute(
-            "DELETE FROM Caves WHERE proprietaire_id = ?", (id_utilisateur_a_supprimer,)
+            "DELETE FROM Caves WHERE proprietaire_id = ?", (
+                id_utilisateur_a_supprimer,)
         )
         c.execute(
             "DELETE FROM Utilisateurs WHERE id_utilisateur = ?",
@@ -158,8 +159,10 @@ def login():
 
 @app.route("/deconnexion")
 def deconnexion():
-    session.pop("logged_in", None)  # Supprimer la clé 'logged_in' de la session
-    session.pop("username", None)  # Supprimer le nom d'utilisateur de la session
+    # Supprimer la clé 'logged_in' de la session
+    session.pop("logged_in", None)
+    # Supprimer le nom d'utilisateur de la session
+    session.pop("username", None)
     return redirect(url_for("login"))  # Rediriger vers la page de connexion
 
 
@@ -209,26 +212,34 @@ def accueil():
         return redirect(url_for("login"))
 
 
-@app.route("/ajouter_bouteille/<int:id_cave>", methods=["POST"])
+@app.route("/ajouter_bouteille/<int:id_cave>", methods=["GET", "POST"])
 def ajouter_bouteille(id_cave):
     if "logged_in" in session and session["logged_in"]:
         if request.method == "POST":
-            nom_bouteille = request.form["nom_bouteille"]
-
-            # Vérifie si la cave appartient à l'utilisateur connecté
+            # Cette partie gère la soumission du formulaire de sélection de bouteille
+            bouteille_id = request.form["bouteille"]
             cave = Cave.recuperer_cave_par_id(id_cave)
+
             if cave and cave.proprietaire.id_utilisateur == session["user_id"]:
-                # Création de la bouteille
-                # ... (implémentez la création de la bouteille)
+                # Récupérez la bouteille sélectionnée par son ID
+                bouteille = Bouteille.recuperer_bouteille_par_id(bouteille_id)
 
-                # Ajout de la bouteille à la cave
-                cave.ajouter_bouteille(nouvelle_bouteille)
-
-                flash("Bouteille ajoutée à la cave avec succès!", "success")
-                return redirect(url_for("accueil"))
+                if bouteille:
+                    # Ajoutez la bouteille à la cave
+                    if cave.ajouter_bouteille(bouteille):
+                        flash("Bouteille ajoutée à la cave avec succès!", "success")
+                        return redirect(url_for("accueil"))
+                    else:
+                        flash("Aucune étagère disponible dans cette cave.", "error")
+                else:
+                    flash("Bouteille sélectionnée introuvable.", "error")
             else:
                 flash("Cette cave n'appartient pas à cet utilisateur.", "error")
-                return redirect(url_for("accueil"))
+
+        # Cette partie gère l'affichage de la liste des bouteilles disponibles
+        bouteilles_disponibles = Bouteille.recuperer_toutes_les_bouteilles()
+        return render_template("ajouter_bouteille.html", id_cave=id_cave, bouteilles=bouteilles_disponibles)
+
     else:
         flash("Vous devez être connecté pour ajouter une bouteille.", "error")
         return redirect(url_for("login"))
