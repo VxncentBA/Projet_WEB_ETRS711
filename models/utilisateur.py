@@ -1,4 +1,5 @@
 import sqlite3
+import bcrypt
 
 
 class Utilisateur:
@@ -8,58 +9,32 @@ class Utilisateur:
         self.nom_utilisateur = nom_utilisateur
         self.mot_de_passe = mot_de_passe
         self.email = email
-        # Listes pour stocker les caves et les étagères de l'utilisateur
-        self.caves = []
-        self.etageres = []
 
-    def creer_cave(self, id_cave, nom_cave):
-        # Crée une nouvelle cave et l'ajoute à la liste des caves de l'utilisateur
-        nouvelle_cave = Cave(id_cave, nom_cave, self)
-        self.caves.append(nouvelle_cave)
-        return nouvelle_cave
-
-    def creer_etagere(
-        self,
-        id_etagere,
-        numero_etagere,
-        region,
-        emplacements_disponibles,
-        cave_associee,
-    ):
-        # Crée une nouvelle étagère et l'ajoute à la liste des étagères de l'utilisateur
-        nouvelle_etagere = Etagere(
-            id_etagere, numero_etagere, region, emplacements_disponibles, cave_associee
+    # Methode pour crée un utilisateur
+    def register(self):
+        hashed_password = bcrypt.hashpw(
+            self.mot_de_passe.encode("utf-8"), bcrypt.gensalt()
         )
-        self.etageres.append(nouvelle_etagere)
-        cave_associee.etageres.append(
-            nouvelle_etagere
-        )  # Ajout à la liste des étagères de la cave
-        print(cave_associee)
-        return nouvelle_etagere
 
-    def sauvegarder_dans_bdd(self):
         conn = sqlite3.connect("ma_base_de_donnees.db")
         c = conn.cursor()
         c.execute(
             "INSERT INTO Utilisateurs VALUES (?, ?, ?, ?)",
-            (self.id_utilisateur, self.nom_utilisateur, self.mot_de_passe, self.email),
+            (self.id_utilisateur, self.nom_utilisateur, hashed_password, self.email),
         )
         conn.commit()
         conn.close()
 
-    def mettre_a_jour_dans_bdd(self):
-        conn = sqlite3.connect("ma_base_de_donnees.db")
-        c = conn.cursor()
-        c.execute(
-            "UPDATE Utilisateurs SET nom_utilisateur = ?, mot_de_passe = ?, email = ? WHERE id_utilisateur = ?",
-            (self.nom_utilisateur, self.mot_de_passe, self.email, self.id_utilisateur),
-        )
-        conn.commit()
-        conn.close()
+        return "Nouvel utilisateur créé avec succès"
+
+    # Méthode pour connecter un utilisateur
+    @staticmethod
+    def login():
+        pass
 
     @staticmethod
-    def utilisateur_existe(id_utilisateur):
-        conn = sqlite3.connect("ma_base_de_donnees.db")
+    def exist(id):
+        conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
         c.execute(
             "SELECT * FROM Utilisateurs WHERE id_utilisateur = ?", (id_utilisateur,)
@@ -67,3 +42,48 @@ class Utilisateur:
         utilisateur = c.fetchone()
         conn.close()
         return utilisateur is not None
+
+    @staticmethod
+    def get_user_by_username(nom_utilisateur):
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute(
+            "SELECT id_utilisateur, nom_utilisateur, mot_de_passe FROM Utilisateurs WHERE nom_utilisateur = ?",
+            (nom_utilisateur,),
+        )
+        utilisateur = c.fetchone()
+        conn.close()
+        return utilisateur is not None
+
+    @staticmethod
+    def get_users():
+        conn = sqlite3.connect("ma_base_de_donnees.db")
+        c = conn.cursor()
+        c.execute("SELECT id_utilisateur, nom_utilisateur FROM Utilisateurs")
+        utilisateurs = c.fetchall()
+        conn.close()
+
+        return utilisateurs
+
+    @staticmethod
+    def supprimer_utilisateur(utilisateur_id):
+        conn = sqlite3.connect("ma_base_de_donnees.db")
+        c = conn.cursor()
+
+        c.execute(
+            "DELETE FROM Etageres WHERE cave_associee_id IN (SELECT id_cave FROM Caves WHERE proprietaire_id = ?)",
+            (utilisateur_id,),
+        )
+        c.execute(
+            "DELETE FROM Bouteilles WHERE id_bouteille IN (SELECT id_bouteille FROM Etageres WHERE cave_associee_id IN (SELECT id_cave FROM Caves WHERE proprietaire_id = ?))",
+            (utilisateur_id,),
+        )
+        c.execute("DELETE FROM Caves WHERE proprietaire_id = ?", (utilisateur_id,))
+        c.execute(
+            "DELETE FROM Utilisateurs WHERE id_utilisateur = ?",
+            (utilisateur_id,),
+        )
+
+        conn.commit()
+        conn.close()
+        return "Utilisateur supprimé avec ses éléments associés"

@@ -1,5 +1,4 @@
 import sqlite3
-from models.etagere import Etagere
 from models.utilisateur import Utilisateur
 
 
@@ -12,25 +11,13 @@ class Cave:
         self.etageres = []  # Liste pour stocker les étagères
         self.bouteilles = []  # Liste pour stocker les bouteilles
 
-    @staticmethod
-    def get_utilisateur_caves(utilisateur_id):
-        conn = sqlite3.connect("bdd.db")
-        c = conn.cursor()
-        c.execute("SELECT * FROM Caves WHERE proprietaire_id = ?", (utilisateur_id,))
-        rows = c.fetchall()
-        caves_utilisateur = [
-            Cave(row[0], row[1], Utilisateur(row[2], None, None, None)) for row in rows
-        ]
-        conn.close()
-        return caves_utilisateur
-
     @classmethod
-    def afficher_details_cave(user_id):
-        conn = sqlite3.connect("bdd.db")
+    def afficher_details_cave(cls, user_id):
+        conn = sqlite3.connect("ma_base_de_donnees.db")
         c = conn.cursor()
 
         # Récupérer les caves de l'utilisateur connecté
-        caves_utilisateur = Cave.get_utilisateur_caves(user_id)
+        caves_utilisateur = cls.recuperer_caves_utilisateur(user_id)
 
         # Récupérer les étagères pour chaque cave de l'utilisateur
         for current_cave in caves_utilisateur:
@@ -46,7 +33,7 @@ class Cave:
 
         conn.close()
 
-        return caves_utilisateur
+        return caves_utilisateur  # Return the list of caves
 
     def ajouter_bouteille(self, bouteille):
         region_bouteille = bouteille.region
@@ -94,6 +81,26 @@ class Cave:
         print(f"Bouteille '{bouteille.nom}' introuvable dans la cave {self.nom_cave}.")
         return False
 
+    def sauvegarder_dans_bdd(self):
+        conn = sqlite3.connect("ma_base_de_donnees.db")
+        c = conn.cursor()
+        c.execute(
+            "INSERT INTO Caves VALUES (?, ?, ?)",
+            (self.id_cave, self.nom_cave, self.proprietaire.id_utilisateur),
+        )
+        conn.commit()
+        conn.close()
+
+    def mettre_a_jour_dans_bdd(self):
+        conn = sqlite3.connect("ma_base_de_donnees.db")
+        c = conn.cursor()
+        c.execute(
+            "UPDATE Caves SET nom_cave = ?, proprietaire_id = ? WHERE id_cave = ?",
+            (self.nom_cave, self.proprietaire.id_utilisateur, self.id_cave),
+        )
+        conn.commit()
+        conn.close()
+
     @staticmethod
     def obtenir_dernier_id_cave():
         conn = sqlite3.connect("ma_base_de_donnees.db")
@@ -102,3 +109,15 @@ class Cave:
         dernier_id = c.fetchone()[0]
         conn.close()
         return dernier_id if dernier_id else 0
+
+    @staticmethod
+    def recuperer_caves_utilisateur(user_id):
+        conn = sqlite3.connect("ma_base_de_donnees.db")
+        c = conn.cursor()
+        c.execute("SELECT * FROM Caves WHERE proprietaire_id = ?", (user_id,))
+        rows = c.fetchall()
+        caves_utilisateur = [
+            Cave(row[0], row[1], Utilisateur(row[2], None, None, None)) for row in rows
+        ]
+        conn.close()
+        return caves_utilisateur
