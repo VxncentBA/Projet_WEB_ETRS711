@@ -37,7 +37,7 @@ class Utilisateur:
         conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
         c.execute(
-            "SELECT * FROM Utilisateurs WHERE id_utilisateur = ?", (id_utilisateur,)
+            "SELECT * FROM Utilisateurs WHERE id_utilisateur = ?", (id,)
         )
         utilisateur = c.fetchone()
         conn.close()

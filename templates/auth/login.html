@@ -9,7 +9,7 @@
     {% if error %}
         <p>{{ error }}</p>
     {% endif %}
-    <form method="POST" action="/login">
+    <form method="POST" action="{{ url_for('users.login') }}">
         <label for="nom_utilisateur">Nom d'utilisateur:</label>
         <input type="text" id="nom_utilisateur" name="nom_utilisateur"><br><br>
     

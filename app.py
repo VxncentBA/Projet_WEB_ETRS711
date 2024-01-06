@@ -13,6 +13,8 @@ from models.cave import Cave
 # Import route in a separate file
 from views.utilisateur import utilisateur_routes
 from views.cave import cave_routes
+from views.etagere import etagere_routes
+from views.bouteille import bouteille_routes
 
 # Create Instance of Flask Server
 app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -20,8 +22,9 @@ app.secret_key = "test"
 
 # Add other file route, to our app
 app.register_blueprint(utilisateur_routes)
-app.register_blueprint(cave_routes)  # Ajoutez cette ligne pour enregistrer le blueprint des caves
-
+app.register_blueprint(cave_routes)
+app.register_blueprint(etagere_routes)
+app.register_blueprint(bouteille_routes)
 
 
 # Home route

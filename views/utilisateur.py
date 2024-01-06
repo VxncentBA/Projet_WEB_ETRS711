@@ -79,8 +79,8 @@ def deconnexion():
     # Supprimer l'id utilisateur de la session
     session.pop("user_id", None)
 
-    return redirect(url_for("users.login"))  # Rediriger vers la page de connexion
-
+    # Rediriger vers la page de connexion
+    return redirect(url_for("users.login"))
 
 
 

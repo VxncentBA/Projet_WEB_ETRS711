@@ -48,6 +48,22 @@ class Cave:
 
         return caves_utilisateur
 
+    def INSERT(self):
+        conn = sqlite3.connect('bdd.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Caves VALUES (?, ?, ?)",
+                  (self.id_cave, self.nom_cave, self.proprietaire.id_utilisateur))
+        conn.commit()
+        conn.close()
+
+    def UPDATE(self):
+        conn = sqlite3.connect('bdd.db')
+        c = conn.cursor()
+        c.execute("UPDATE Caves SET nom_cave = ?, proprietaire_id = ? WHERE id_cave = ?",
+                  (self.nom_cave, self.proprietaire.id_utilisateur, self.id_cave))
+        conn.commit()
+        conn.close()
+
     def ajouter_bouteille(self, bouteille):
         region_bouteille = bouteille.region
 
@@ -96,7 +112,7 @@ class Cave:
 
     @staticmethod
     def obtenir_dernier_id_cave():
-        conn = sqlite3.connect("ma_base_de_donnees.db")
+        conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
         c.execute("SELECT MAX(id_cave) FROM Caves")
         dernier_id = c.fetchone()[0]

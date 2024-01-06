@@ -6,50 +6,28 @@
     <title>Ajouter une bouteille</title>
 </head>
 <body>
-    <h1>Ajouter une bouteille à la cave</h1>
-    <form method="POST" action="/ajouter_bouteille/{{ id_cave }}">
-        <label for="nom_bouteille">Nom de la bouteille :</label>
-        <input type="text" id="nom_bouteille" name="nom_bouteille" required><br>
+    <h1>Ajouter une bouteille</h1>
+    <form action="/ajouter_bouteille" method="POST" action="{{ url_for('bouteille.ajouter_bouteille') }}">
+        <label for="domaine_viticole">Domaine viticole:</label>
+        <input type="text" id="domaine_viticole" name="domaine_viticole" required><br><br>
+        <label for="nom">Nom:</label>
+        <input type="text" id="nom" name="nom" required><br><br>
+        <label for="type">Type:</label>
+        <input type="text" id="type" name="type" required><br><br>
+        <label for="annee">Année:</label>
+        <input type="text" id="annee" name="annee" required><br><br>
+        <label for="region">Région:</label>
+        <input type="text" id="region" name="region" required><br><br>
+        <label for="commentaires">Commentaires:</label>
+        <input type="text" id="commentaires" name="commentaires"><br><br>
+        <label for="note_personnelle">Note personnelle:</label>
+        <input type="text" id="note_personnelle" name="note_personnelle" required><br><br>
+        <label for="photo_etiquette">Photo étiquette:</label>
+        <input type="text" id="photo_etiquette" name="photo_etiquette" ><br><br>
+        <label for="prix">Prix:</label>
+        <input type="text" id="prix" name="prix" required><br><br>
 
-        <label for="domaine_viticole">Domaine viticole :</label>
-        <input type="text" id="domaine_viticole" name="domaine_viticole" required><br>
-
-        <label for="type">Type :</label>
-        <input type="text" id="type" name="type" required><br>
-
-        <label for="annee">Année :</label>
-        <input type="number" id="annee" name="annee" required><br>
-
-        <label for="region">Région :</label>
-        <input type="text" id="region" name="region" required><br>
-
-        <label for="commentaires">Commentaires :</label>
-        <textarea id="commentaires" name="commentaires"></textarea><br>
-
-        <label for="note_personnelle">Note personnelle :</label>
-        <input type="number" id="note_personnelle" name="note_personnelle" min="0" max="10"><br>
-
-        <label for="note_moyenne">Note moyenne :</label>
-        <input type="number" id="note_moyenne" name="note_moyenne" min="0" max="10"><br>
-
-        <label for="photo_etiquette">URL de la photo de l'étiquette :</label>
-        <input type="url" id="photo_etiquette" name="photo_etiquette"><br>
-
-        <label for="prix">Prix :</label>
-        <input type="number" id="prix" name="prix" step="0.01"><br>
-
-        <button type="submit">Ajouter la bouteille</button>
+        <input type="submit" value="Créer">
     </form>
-
-    <form method="POST" action="/ajouter_bouteille/{{ id_cave }}">
-        <label for="bouteille">Sélectionnez une bouteille :</label>
-        <select name="bouteille" id="bouteille">
-            {% for bouteille in bouteilles %}
-                <option value="{{ bouteille.id_bouteille }}">{{ bouteille.nom }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Ajouter à la cave</button>
-    </form>
-    
 </body>
 </html>

@@ -29,7 +29,7 @@ def creer_cave():
                 nom_cave=nom_cave,
                 proprietaire=Utilisateur(user_id, None, None, None),
             )
-            nouvelle_cave.sauvegarder_dans_bdd()
+            nouvelle_cave.INSERT()
 
             flash("Nouvelle cave créée avec succès!", "success")
             return redirect(url_for("accueil"))

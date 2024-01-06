@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Etagere</title>
+</head>
+<body>
+    <h1>Create Etagere</h1>
+    
+    <form action="/creer_etagere" method="POST" action="{{ url_for('etagere.creer_etagere') }}">
+        <label for="region">region:</label>
+        <input type="text" id="region" name="region" required><br><br>
+        <label for="capacite">capacite:</label>
+        <input type="text" id="capacite" name="capacite" required><br><br>
+        <label for="numero">numero:</label>
+        <input type="text" id="numero" name="numero" required><br><br>
+        <label for="choisir cave">choisir cave:</label>
+        <select name="cave_id" id="cave_id">
+            {% for cave in caves %}
+                <option value="{{ cave.id_cave }}">{{ cave.nom_cave }}</option>
+            {% endfor %}
+        <input type="submit" value="Create">
+    </form>
+</body>
+</html>
