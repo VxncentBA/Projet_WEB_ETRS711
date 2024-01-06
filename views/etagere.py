@@ -10,6 +10,7 @@ from flask import (
 
 from models.etagere import Etagere
 from models.cave import Cave
+from models.bouteille import Bouteille
 
 etagere_routes = Blueprint("etagere", __name__)
 
@@ -46,4 +47,29 @@ def creer_etagere():
             return render_template("creer_etagere.html", caves=output)
     else:
         flash("Vous devez être connecté pour créer une etagere.", "error")
+        return redirect(url_for("users.login"))
+
+@etagere_routes.route("/etagere/<int:id_etagere>/ajouter", methods=["GET", "POST"])
+
+def ajouter_bouteille_etagere(id_etagere):
+    if "logged_in" in session and session["logged_in"]:
+        if request.method == "POST":
+            bouteille_id = request.form["bouteille_id"]
+            etagere_id = id_etagere
+            
+            if Etagere.get_emplacement_disponibles(id_etagere) > 0:
+
+                Etagere.ajouter_bouteille_etagere(etagere_id, bouteille_id)
+                flash("Nouvelle bouteille créée avec succès!", "success")
+
+            
+            return redirect(url_for("accueil"))
+        else:
+            bouteilles = Bouteille.get_bouteilles()
+            output = []
+            for bouteille in bouteilles:
+                output.append({"id_bouteille": bouteille.id_bouteille, "nom_bouteille": bouteille.nom})
+            return render_template("ajouter_bouteille_etagere.html", bouteilles=output, etagere_id=id_etagere)
+    else:
+        flash("Vous devez être connecté pour ajouter une bouteille.", "error")
         return redirect(url_for("users.login"))

@@ -57,7 +57,7 @@ def ajouter_bouteille():
         flash("Vous devez être connecté pour ajouter une bouteille.", "error")
         return redirect(url_for("users.login"))
 
-@ajouter_bouteille_cave.route("/ajouter_bouteille_cave", methods=["GET", "POST"])
+#@ajouter_bouteille_cave.route("/ajouter_bouteille_cave", methods=["GET", "POST"])
 
-def ajouter_bouteille_cave():
-    if "logged_in" in session and session["logged_in"]:
+#def ajouter_bouteille_cave():
+#    if "logged_in" in session and session["logged_in"]:

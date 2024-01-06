@@ -109,3 +109,39 @@ class Etagere:
         etagere = Etagere(row[0], row[1], row[2], row[3])
         conn.close()
         return etagere
+
+    @staticmethod
+    def ajouter_bouteille_etagere(id_bouteille, id_etagere):
+        id=Etagere.obtenir_dernier_id_etagerebouteille()+1
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute("INSERT INTO EtagereBouteille VALUES (?, ?, ?)", (id, id_bouteille, id_etagere))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def obtenir_dernier_id_etagerebouteille():
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute("SELECT MAX(id) FROM EtagereBouteille")
+        dernier_id_etagerebouteille = c.fetchone()[0]
+        conn.close()
+        return dernier_id_etagerebouteille
+
+    @staticmethod
+    def get_emplacement_utilises(id_etagere):
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute("SELECT COUNT(*) FROM EtagereBouteille WHERE etagere_id = ?", (id_etagere,))
+        emplacements_utilises = c.fetchone()[0]
+        conn.close()
+        return emplacements_utilises
+
+    @staticmethod
+    def get_emplacement_disponibles(id_etagere):
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute("SELECT emplacements_disponibles FROM Etageres WHERE id_etagere = ?", (id_etagere,))
+        capacite = c.fetchone()[0]
+        conn.close()
+        return capacite - Etagere.get_emplacement_utilises(id_etagere)

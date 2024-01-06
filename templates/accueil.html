@@ -18,6 +18,7 @@
                         <ul>
                             {% for etagere in cave.etageres %}
                                 <li>Étagère {{ etagere.numero }} <!-- Utilisation des attributs d'objet -->
+                                    <a href="{{ url_for('etagere.ajouter_bouteille_etagere', id_etagere=etagere.id_etagere)}}">ajouter bouteille</a>
                                     {% if etagere.bouteilles %}
                                         <ul>
                                             {% for bouteille in etagere.bouteilles %}
