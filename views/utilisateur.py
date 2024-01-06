@@ -27,6 +27,7 @@ def login():
         mot_de_passe = request.form["mot_de_passe"]
 
         utilisateur = Utilisateur.get_user_by_username(nom_utilisateur)
+        print(utilisateur)
 
         if utilisateur and verify_password(utilisateur[2], mot_de_passe):
             session["logged_in"] = True
@@ -55,7 +56,8 @@ def register():
         email = request.form["email"]
 
         if Utilisateur.exist(id_utilisateur):
-            return "Utilisateur avec cet ID existe déjà"
+            flash("Utilisateur avec cet ID existe déjà.", "error")
+            return redirect(url_for("users.register"))
         else:
             nouvel_utilisateur = Utilisateur(
                 id_utilisateur=id_utilisateur,
@@ -63,7 +65,9 @@ def register():
                 mot_de_passe=mot_de_passe,
                 email=email,
             )
-            return nouvel_utilisateur.register()
+            flash(nouvel_utilisateur.register(), "success")
+            return redirect(url_for("users.login"))
+
 
 
 @utilisateur_routes.route("/deconnexion", methods=["GET"])
@@ -75,7 +79,9 @@ def deconnexion():
     # Supprimer l'id utilisateur de la session
     session.pop("user_id", None)
 
-    return redirect(url_for("login"))  # Rediriger vers la page de connexion
+    return redirect(url_for("users.login"))  # Rediriger vers la page de connexion
+
+
 
 
 @utilisateur_routes.route("/supprimer_utilisateur", methods=["GET", "POST"])
@@ -85,4 +91,7 @@ def supprimer_utilisateur():
             "supprimer_utilisateur.html", utilisateurs=Utilisateur.get_users()
         )
     else:
-        Utilisateur.supprimer_utilisateur()
+        utilisateur_id = request.form["utilisateur_id"]  # Get the utilisateur_id from the form
+        Utilisateur.supprimer_utilisateur(utilisateur_id)  # Pass utilisateur_id as an argument
+        flash("Utilisateur supprimé avec ses éléments associés.", "success")
+        return redirect(url_for("users.supprimer_utilisateur"))

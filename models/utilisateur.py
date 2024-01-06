@@ -16,7 +16,7 @@ class Utilisateur:
             self.mot_de_passe.encode("utf-8"), bcrypt.gensalt()
         )
 
-        conn = sqlite3.connect("ma_base_de_donnees.db")
+        conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
         c.execute(
             "INSERT INTO Utilisateurs VALUES (?, ?, ?, ?)",
@@ -53,11 +53,11 @@ class Utilisateur:
         )
         utilisateur = c.fetchone()
         conn.close()
-        return utilisateur is not None
+        return utilisateur
 
     @staticmethod
     def get_users():
-        conn = sqlite3.connect("ma_base_de_donnees.db")
+        conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
         c.execute("SELECT id_utilisateur, nom_utilisateur FROM Utilisateurs")
         utilisateurs = c.fetchall()
@@ -67,7 +67,7 @@ class Utilisateur:
 
     @staticmethod
     def supprimer_utilisateur(utilisateur_id):
-        conn = sqlite3.connect("ma_base_de_donnees.db")
+        conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
 
         c.execute(

@@ -25,7 +25,7 @@ class Cave:
         return caves_utilisateur
 
     @classmethod
-    def afficher_details_cave(user_id):
+    def afficher_details_cave(cls, user_id):
         conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
 

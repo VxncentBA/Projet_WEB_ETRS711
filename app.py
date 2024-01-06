@@ -16,9 +16,12 @@ from views.cave import cave_routes
 
 # Create Instance of Flask Server
 app = Flask(__name__, template_folder="templates", static_folder="static")
+app.secret_key = "test"
 
 # Add other file route, to our app
 app.register_blueprint(utilisateur_routes)
+app.register_blueprint(cave_routes)  # Ajoutez cette ligne pour enregistrer le blueprint des caves
+
 
 
 # Home route
@@ -39,7 +42,8 @@ def accueil():
                 caves_utilisateur=caves_utilisateur,
             )
     else:
-        return redirect(url_for("users.login"))
+        return redirect(url_for("users.deconnexion"))  # Rediriger vers la page de connexion après la déconnexion
+
 
 
 # Debug route
