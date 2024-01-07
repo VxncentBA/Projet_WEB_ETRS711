@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="static/login_styles.css">
 </head>
 <body>
     <h1>Login</h1>
@@ -10,10 +11,10 @@
         <p>{{ error }}</p>
     {% endif %}
     <form method="POST" action="{{ url_for('users.login') }}">
-        <label for="nom_utilisateur">Nom d'utilisateur:</label>
+        <label for="nom_utilisateur">Nom d'utilisateur :</label>
         <input type="text" id="nom_utilisateur" name="nom_utilisateur"><br><br>
     
-        <label for="mot_de_passe">Mot de passe:</label>
+        <label for="mot_de_passe">Mot de passe :</label>
         <input type="password" id="mot_de_passe" name="mot_de_passe"><br><br>
     
         <input type="submit" value="Se connecter">
@@ -21,6 +22,5 @@
 
     <!-- Ajout d'un bouton ou lien pour l'inscription -->
     <p>Vous n'avez pas de compte ? <a href="{{ url_for('users.register') }}">Inscrivez-vous ici</a></p>
-    
 </body>
 </html>
