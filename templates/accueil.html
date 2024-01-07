@@ -12,6 +12,7 @@
         {% if nom_utilisateur %}
             <p>Connecté en tant que : {{ nom_utilisateur }}</p>
             <a href="{{ url_for('caves.creer_cave') }}"><button>Créer une nouvelle cave</button></a>
+            <a href="{{ url_for('bouteille.ajouter_bouteille') }}"><button>Créer une nouvelle bouteille dans la liste globale</button></a>
         {% endif %}
     </header>
     <main>
