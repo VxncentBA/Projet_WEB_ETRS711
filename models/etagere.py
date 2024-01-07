@@ -9,7 +9,23 @@ class Etagere:
         self.capacite = capacite
         self.cave_associee = cave_associee
         self.bouteilles = []  # Ajout de l'attribut pour les bouteilles
+        self.charger_bouteilles()  # Chargement des bouteilles
 
+    def to_dict(self):
+        bouteilles = []
+        print(self.bouteilles)
+        if self.bouteilles != [] or self.bouteilles != None:
+            for bottle in self.bouteilles:
+                bouteilles.append(bottle.to_dict())
+
+        return {
+            "id_etagere": self.id_etagere,
+            "numero": self.numero,
+            "region": self.region,
+            "capacite": self.capacite,
+            "cave_associee": self.cave_associee,
+            "bouteilles": bouteilles,
+        }
 
     @staticmethod
     def get_etageres():
@@ -163,8 +179,7 @@ class Etagere:
             (self.id_etagere,)
         )
         rows = c.fetchall()
-        self.bouteilles = [
-            Bouteille(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]) 
-            for row in rows
-        ]
+        for row in rows:
+            bouteille = Bouteille(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])
+            self.bouteilles.append(bouteille)
         conn.close()

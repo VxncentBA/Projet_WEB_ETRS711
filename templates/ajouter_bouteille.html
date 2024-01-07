@@ -4,30 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter une bouteille</title>
+    <link rel="stylesheet" href="static/ajouter_bouteille_styles.css">
 </head>
 <body>
-    <h1>Ajouter une bouteille</h1>
-    <form action="/ajouter_bouteille" method="POST" action="{{ url_for('bouteille.ajouter_bouteille') }}">
-        <label for="domaine_viticole">Domaine viticole:</label>
-        <input type="text" id="domaine_viticole" name="domaine_viticole" required><br><br>
-        <label for="nom">Nom:</label>
-        <input type="text" id="nom" name="nom" required><br><br>
-        <label for="type">Type:</label>
-        <input type="text" id="type" name="type" required><br><br>
-        <label for="annee">Année:</label>
-        <input type="text" id="annee" name="annee" required><br><br>
-        <label for="region">Région:</label>
-        <input type="text" id="region" name="region" required><br><br>
-        <label for="commentaires">Commentaires:</label>
-        <input type="text" id="commentaires" name="commentaires"><br><br>
-        <label for="note_personnelle">Note personnelle:</label>
-        <input type="text" id="note_personnelle" name="note_personnelle" required><br><br>
-        <label for="photo_etiquette">Photo étiquette:</label>
-        <input type="text" id="photo_etiquette" name="photo_etiquette" ><br><br>
-        <label for="prix">Prix:</label>
-        <input type="text" id="prix" name="prix" required><br><br>
-
-        <input type="submit" value="Créer">
-    </form>
+    <header>
+        <h1>Ajouter une bouteille</h1>
+    </header>
+    <main>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('bouteille.ajouter_bouteille') }}" class="form-bouteille">
+                    <div class="form-group">
+                        <label for="domaine_viticole">Domaine viticole:</label>
+                        <input type="text" id="domaine_viticole" name="domaine_viticole" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Nom:</label>
+                        <input type="text" id="nom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Type:</label>
+                        <input type="text" id="type" name="type" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="annee">Année:</label>
+                        <input type="text" id="annee" name="annee" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="region">Région:</label>
+                        <input type="text" id="region" name="region" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="commentaires">Commentaires:</label>
+                        <input type="text" id="commentaires" name="commentaires">
+                    </div>
+                    <div class="form-group">
+                        <label for="note_personnelle">Note personnelle:</label>
+                        <input type="text" id="note_personnelle" name="note_personnelle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo_etiquette">Photo étiquette:</label>
+                        <input type="text" id="photo_etiquette" name="photo_etiquette" >
+                    </div>
+                    <div class="form-group">
+                        <label for="prix">Prix:</label>
+                        <input type="text" id="prix" name="prix" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>© 2023 BARBARAS Vincent</p>
+    </footer>
 </body>
 </html>

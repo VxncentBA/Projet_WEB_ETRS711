@@ -40,6 +40,8 @@ def accueil():
             return jsonify({"status": "success", "msg": caves_utilisateur}), 200
         else:
             print(caves_utilisateur)
+            for cave in caves_utilisateur:
+                print(cave.to_dict())
             return render_template(
                 "accueil.html",
                 nom_utilisateur=nom_utilisateur,

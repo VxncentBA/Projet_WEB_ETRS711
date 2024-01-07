@@ -1,24 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Create Etagere</title>
+    <link rel="stylesheet" href="static/accueil_styles.css">
 </head>
 <body>
-    <h1>Create Etagere</h1>
-    
-    <form action="/creer_etagere" method="POST" action="{{ url_for('etagere.creer_etagere') }}">
-        <label for="region">region:</label>
-        <input type="text" id="region" name="region" required><br><br>
-        <label for="capacite">capacite:</label>
-        <input type="text" id="capacite" name="capacite" required><br><br>
-        <label for="numero">numero:</label>
-        <input type="text" id="numero" name="numero" required><br><br>
-        <label for="choisir cave">choisir cave:</label>
-        <select name="cave_id" id="cave_id">
-            {% for cave in caves %}
-                <option value="{{ cave.id_cave }}">{{ cave.nom_cave }}</option>
-            {% endfor %}
-        <input type="submit" value="Create">
-    </form>
+    <header>
+        <h1>Créer une nouvelle étagère</h1>
+    </header>
+    <main>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('etagere.creer_etagere') }}" class="form-etagere">
+                    <div class="form-group">
+                        <label for="region">Région :</label>
+                        <input type="text" id="region" name="region" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="capacite">Capacité :</label>
+                        <input type="text" id="capacite" name="capacite" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numero">Numéro :</label>
+                        <input type="text" id="numero" name="numero" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cave_id">Choisir cave :</label>
+                        <select name="cave_id" id="cave_id">
+                            {% for cave in caves %}
+                                <option value="{{ cave.id_cave }}">{{ cave.nom_cave }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>© 2023 BARBARAS Vincent</p>
+    </footer>
 </body>
 </html>

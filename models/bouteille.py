@@ -16,6 +16,21 @@ class Bouteille:
         self.prix = prix
         self.lots = []
 
+    def to_dict(self):
+        return {
+            "id_bouteille": self.id_bouteille,
+            "domaine_viticole": self.domaine_viticole,
+            "nom": self.nom,
+            "type": self.type,
+            "annee": self.annee,
+            "region": self.region,
+            "commentaires": self.commentaires,
+            "note_personnelle": self.note_personnelle,
+            "note_moyenne": self.note_moyenne,
+            "photo_etiquette": self.photo_etiquette,
+            "prix": self.prix,
+        }
+
 
     @staticmethod
     def get_bouteilles():

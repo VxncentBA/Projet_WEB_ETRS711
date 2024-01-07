@@ -2,17 +2,19 @@
 <html>
 <head>
     <title>Add Bouteille</title>
+    <link rel="stylesheet" href="static/ajouter_bouteille_styles.css">
 </head>
 <body>
     <h1>Add Bouteille</h1>
     
     <form method="POST" action="{{ url_for('etagere.ajouter_bouteille_etagere', id_etagere=etagere_id) }}">
-        <label for="bouteille_id">choisir bouteille:</label>
+        <label for="bouteille_id">Choisir une bouteille :</label>
         <select name="bouteille_id" id="id_bouteille">
             {% for bouteille in bouteilles %}
                 <option value="{{ bouteille.id_bouteille }}">{{ bouteille.nom_bouteille }}</option>
             {% endfor %}
-        <input type="submit" value="Create">
+        </select>
+        <input type="submit" value="Créer">
     </form>
 </body>
 </html>

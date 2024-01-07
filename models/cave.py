@@ -12,6 +12,25 @@ class Cave:
         self.etageres = []  # Liste pour stocker les étagères
         self.bouteilles = []  # Liste pour stocker les bouteilles
 
+    def __repr__(self):
+        return f"Cave {self.nom_cave} (id: {self.id_cave})"
+
+    def __str__(self):
+        return f"Cave {self.nom_cave} (id: {self.id_cave})"
+
+    def to_dict(self):
+        etageres = []
+        if self.etageres != [] or self.etageres != None:
+            for etagere in self.etageres:
+                etageres.append(etagere.to_dict())
+
+        return {
+            "id_cave": self.id_cave,
+            "nom_cave": self.nom_cave,
+            "proprietaire": self.proprietaire,
+            "etageres": etageres,
+        }
+
     @staticmethod
     def get_utilisateur_caves(utilisateur_id):
         conn = sqlite3.connect("bdd.db")
@@ -41,7 +60,6 @@ class Cave:
             etageres_cave = c.fetchall()
             for row in etageres_cave:
                 etagere = Etagere(row[0], row[1], row[2], row[3], current_cave)
-                etagere.bouteilles = etagere.charger_bouteilles()  # Charger les bouteilles pour l'étagère
                 current_cave.etageres.append(etagere)
 
         conn.close()
