@@ -140,7 +140,7 @@ class Etagere:
     def supprimer_bouteille_etagere(id_bouteille, id_etagere):
         conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
-        c.execute("DELETE FROM EtagereBouteille WHERE bouteille_id = ? AND etagere_id = ?", (id_bouteille, id_etagere))
+        c.execute("DELETE FROM EtagereBouteille WHERE bouteille_id = ? AND etagere_id = ?", (id_etagere, id_bouteille))
         conn.commit()
         conn.close()
 
