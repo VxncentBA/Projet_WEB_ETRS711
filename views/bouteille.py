@@ -57,7 +57,14 @@ def ajouter_bouteille():
         flash("Vous devez être connecté pour ajouter une bouteille.", "error")
         return redirect(url_for("users.login"))
 
-#@ajouter_bouteille_cave.route("/ajouter_bouteille_cave", methods=["GET", "POST"])
+@bouteille_routes.route("/supprimer_bouteille/<int:id_bouteille>", methods=["GET", "POST"])
 
-#def ajouter_bouteille_cave():
-#    if "logged_in" in session and session["logged_in"]:
+def supprimer_bouteille(id_bouteille):
+    if "logged_in" in session and session["logged_in"]:
+        bouteille = Bouteille(id_bouteille, None, None, None, None, None, None, None, None, None, None)
+        bouteille.DELETE()
+        flash("Bouteille supprimée avec succès!", "success")
+        return redirect(url_for("accueil"))
+    else:
+        flash("Vous devez être connecté pour supprimer une bouteille.", "error")
+        return redirect(url_for("users.login"))

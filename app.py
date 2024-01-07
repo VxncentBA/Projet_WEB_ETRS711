@@ -39,6 +39,7 @@ def accueil():
         if request.args.get("response") == "json":
             return jsonify({"status": "success", "msg": caves_utilisateur}), 200
         else:
+            print(caves_utilisateur)
             return render_template(
                 "accueil.html",
                 nom_utilisateur=nom_utilisateur,

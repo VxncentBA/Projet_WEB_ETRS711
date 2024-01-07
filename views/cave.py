@@ -38,3 +38,14 @@ def creer_cave():
     else:
         flash("Vous devez être connecté pour créer une cave.", "error")
         return redirect(url_for("users.login"))
+
+@cave_routes.route("/supprimer_cave/<int:id_cave>", methods=["GET", "POST"])
+def supprimer_cave(id_cave):
+    if "logged_in" in session and session["logged_in"]:
+        cave = Cave(id_cave, None, None)
+        cave.DELETE()
+        flash("Cave supprimée avec succès!", "success")
+        return redirect(url_for("accueil"))
+    else:
+        flash("Vous devez être connecté pour supprimer une cave.", "error")
+        return redirect(url_for("users.login"))

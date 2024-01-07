@@ -1,5 +1,5 @@
 import sqlite3
-
+from models.bouteille import Bouteille
 
 class Etagere:
     def __init__(self, id_etagere, numero, region, capacite, cave_associee):
@@ -8,6 +8,7 @@ class Etagere:
         self.region = region
         self.capacite = capacite
         self.cave_associee = cave_associee
+        self.bouteilles = []  # Ajout de l'attribut pour les bouteilles
 
 
     @staticmethod
@@ -120,6 +121,14 @@ class Etagere:
         conn.close()
 
     @staticmethod
+    def supprimer_bouteille_etagere(id_bouteille, id_etagere):
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute("DELETE FROM EtagereBouteille WHERE bouteille_id = ? AND etagere_id = ?", (id_bouteille, id_etagere))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
     def obtenir_dernier_id_etagerebouteille():
         conn = sqlite3.connect("bdd.db")
         c = conn.cursor()
@@ -145,3 +154,17 @@ class Etagere:
         capacite = c.fetchone()[0]
         conn.close()
         return capacite - Etagere.get_emplacement_utilises(id_etagere)
+
+    def charger_bouteilles(self):
+        conn = sqlite3.connect("bdd.db")
+        c = conn.cursor()
+        c.execute(
+            "SELECT * FROM Bouteilles WHERE id_bouteille IN (SELECT bouteille_id FROM EtagereBouteille WHERE etagere_id = ?)", 
+            (self.id_etagere,)
+        )
+        rows = c.fetchall()
+        self.bouteilles = [
+            Bouteille(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]) 
+            for row in rows
+        ]
+        conn.close()

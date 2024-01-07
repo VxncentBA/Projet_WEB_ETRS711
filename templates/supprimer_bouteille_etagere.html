@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supprimer Bouteille</title>
+</head>
+<body>
+    <h1>Supprimer Bouteille de l'Étagère</h1>
+    
+    <form method="POST" action="{{ url_for('etagere.supprimer_bouteille_etagere', id_etagere=etagere_id) }}">
+        <label for="bouteille_id">Choisir la bouteille à supprimer :</label>
+        <select name="bouteille_id" id="bouteille_id">
+            {% for bouteille in bouteilles %}
+                <option value="{{ bouteille.id_bouteille }}">{{ bouteille.nom_bouteille }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Supprimer">
+    </form>
+</body>
+</html>

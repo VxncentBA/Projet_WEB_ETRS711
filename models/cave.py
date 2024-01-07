@@ -32,17 +32,17 @@ class Cave:
         # Récupérer les caves de l'utilisateur connecté
         caves_utilisateur = Cave.get_utilisateur_caves(user_id)
 
-        # Récupérer les étagères pour chaque cave de l'utilisateur
+        # Récupérer les étagères et les bouteilles pour chaque cave de l'utilisateur
         for current_cave in caves_utilisateur:
             c.execute(
                 "SELECT * FROM Etageres WHERE cave_associee_id = ?",
                 (current_cave.id_cave,),
             )
             etageres_cave = c.fetchall()
-            current_cave.etageres = [
-                Etagere(row[0], row[1], row[2], row[3], current_cave)
-                for row in etageres_cave
-            ]
+            for row in etageres_cave:
+                etagere = Etagere(row[0], row[1], row[2], row[3], current_cave)
+                etagere.bouteilles = etagere.charger_bouteilles()  # Charger les bouteilles pour l'étagère
+                current_cave.etageres.append(etagere)
 
         conn.close()
 
@@ -61,6 +61,13 @@ class Cave:
         c = conn.cursor()
         c.execute("UPDATE Caves SET nom_cave = ?, proprietaire_id = ? WHERE id_cave = ?",
                   (self.nom_cave, self.proprietaire.id_utilisateur, self.id_cave))
+        conn.commit()
+        conn.close()
+
+    def DELETE(self):
+        conn = sqlite3.connect('bdd.db')
+        c = conn.cursor()
+        c.execute("DELETE FROM Caves WHERE id_cave = ?", (self.id_cave,))
         conn.commit()
         conn.close()
 

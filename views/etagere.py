@@ -73,3 +73,39 @@ def ajouter_bouteille_etagere(id_etagere):
     else:
         flash("Vous devez être connecté pour ajouter une bouteille.", "error")
         return redirect(url_for("users.login"))
+
+
+@etagere_routes.route("/supprimer_etagere/<int:id_etagere>", methods=["GET", "POST"])
+
+def supprimer_etagere(id_etagere):
+    if "logged_in" in session and session["logged_in"]:
+        etagere = Etagere(id_etagere, None, None, None, None)
+        etagere.DELETE()
+        flash("Etagere supprimée avec succès!", "success")
+        return redirect(url_for("accueil"))
+    else:
+        flash("Vous devez être connecté pour supprimer une etagere.", "error")
+        return redirect(url_for("users.login"))
+
+
+@etagere_routes.route("/etagere/<int:id_etagere>/supprimer", methods=["GET", "POST"])
+
+def supprimer_bouteille_etagere(id_etagere):
+    if "logged_in" in session and session["logged_in"]:
+        if request.method == "POST":
+            bouteille_id = request.form["bouteille_id"]
+            etagere_id = id_etagere
+            
+            Etagere.supprimer_bouteille_etagere(etagere_id, bouteille_id)
+            flash("Bouteille supprimée avec succès!", "success")
+
+            return redirect(url_for("accueil"))
+        else:
+            bouteilles = Bouteille.get_bouteilles()
+            output = []
+            for bouteille in bouteilles:
+                output.append({"id_bouteille": bouteille.id_bouteille, "nom_bouteille": bouteille.nom})
+            return render_template("supprimer_bouteille_etagere.html", bouteilles=output, etagere_id=id_etagere)
+    else:
+        flash("Vous devez être connecté pour supprimer une bouteille.", "error")
+        return redirect(url_for("users.login"))

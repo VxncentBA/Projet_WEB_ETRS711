@@ -10,19 +10,41 @@
         <h1>Bienvenue sur la page d'accueil</h1>
         {% if nom_utilisateur %}
             <p>Connecté en tant que : {{ nom_utilisateur }}</p>
+            <!-- Bouton pour créer une nouvelle cave -->
+            <a href="{{ url_for('caves.creer_cave') }}"><button>Créer une nouvelle cave</button></a>
             <h2>Caves de l'utilisateur</h2>
             <ul>
                 {% for cave in caves_utilisateur %}
                     <li>
                         {{ cave.nom_cave }} <!-- Utilisation des attributs d'objet -->
+                        <!-- Bouton pour créer une nouvelle étagère dans cette cave -->
+                        <a href="{{ url_for('etagere.creer_etagere', cave_id=cave.id_cave) }}">
+                            <button>Créer une étagère</button>
+                        </a>
+                        <!-- Formulaire de suppression de la cave -->
+                        <form method="POST" action="{{ url_for('caves.supprimer_cave', id_cave=cave.id_cave) }}" style="display: inline;">
+                            <input type="hidden" name="id_cave" value="{{ cave.id_cave }}">
+                            <!-- Le jeton CSRF doit être inclus ici si vous utilisez la protection CSRF -->
+                            <button type="submit">Supprimer cette cave</button>
+                        </form>
                         <ul>
                             {% for etagere in cave.etageres %}
                                 <li>Étagère {{ etagere.numero }} <!-- Utilisation des attributs d'objet -->
                                     <a href="{{ url_for('etagere.ajouter_bouteille_etagere', id_etagere=etagere.id_etagere)}}">ajouter bouteille</a>
+                                    <!-- Formulaire de suppression de l'étagère -->
+                                    <form method="POST" action="{{ url_for('etagere.supprimer_etagere', id_etagere=etagere.id_etagere) }}" style="display: inline;">
+                                        <input type="hidden" name="id_etagere" value="{{ etagere.id_etagere }}">
+                                        <!-- Le jeton CSRF doit être inclus ici si vous utilisez la protection CSRF -->
+                                        <button type="submit">Supprimer cette étagère</button>
+                                    </form>
                                     {% if etagere.bouteilles %}
                                         <ul>
                                             {% for bouteille in etagere.bouteilles %}
-                                                <li>{{ bouteille.nom }}</li> <!-- Utilisation des attributs d'objet -->
+                                                <li>{{ bouteille.nom }}
+                                                    <!-- Lien pour supprimer une bouteille -->
+                                                    <a href="{{ url_for('etagere.supprimer_bouteille_etagere', id_etagere=etagere.id_etagere) }}">Supprimer cette bouteille</a>
+
+                                                </li> <!-- Utilisation des attributs d'objet -->
                                             {% endfor %}
                                         </ul>
                                     {% else %}
@@ -37,7 +59,6 @@
         {% endif %}
     </header>
     <main>
-        <!-- Autres éléments ou sections à ajouter -->
         <a href="{{ url_for('users.deconnexion') }}">Déconnexion</a>
     </main>
     <footer>
