@@ -4,7 +4,7 @@ Projet Web Conception et Programmation Orientée Objet d’une application web (
 
 # Diagramme UML
 
-![test.png](Projet_WEB_ETRS711%20aa50fe36c8d74659898eccebaf32468a/test.png)
+![UML.png](UML.png)
 
 1. La classe **`Utilisateur`** est associée à la classe **`Cave`** avec une relation d'agrégation (agrégation composite). Cela signifie qu'un utilisateur peut posséder plusieurs caves, et chaque cave appartient à un utilisateur. L'association est représentée par une flèche entre les deux classes avec le losange noir du côté de la classe **`Utilisateur`**.
 2. La classe **`Cave`** est associée à la classe **`Etagere`** avec une relation d'agrégation (agrégation composite). Cela signifie qu'une cave peut contenir plusieurs étagères, et chaque étagère appartient à une cave. L'association est représentée par une flèche entre les deux classes avec le losange noir du côté de la classe **`Cave`**.
